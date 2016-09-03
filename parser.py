@@ -18,8 +18,10 @@ def parser(nombre_archivo_entrada, nombre_archivo_salida, pesoTexto, pesoResumen
     except IOError:
         print "¡Error! "
 
-
     linea_salida = []
+    unstringfeo = "vowpal no cabe: esta no le cabe:"
+    unstringlindo = str(unstringfeo).replace(':',"")
+    print unstringlindo
     contador = 0
     promedioHelpDenom = obtenerPromedio(nombre_archivo_entrada)
 
@@ -41,10 +43,9 @@ def parser(nombre_archivo_entrada, nombre_archivo_salida, pesoTexto, pesoResumen
     	campoResumen = resumen
     	campoTexto = texto
 
-
-    	linea_salida = str(prediction) + " " + str(importancia) + " " + str(base) + " " + str(tag) \
-                        + "|Resumen:" + str(pesoResumen) + " " + str(campoResumen) \
-                        + " |Texto:" + str(pesoTexto) + " " + str(campoTexto) + "\n"
+    	linea_salida = str(prediction) + " " + str(importancia) + " " + str(base) + " '" + str(tag) \
+        + " |Resumen:" + str(pesoResumen) + " " + str(str(campoResumen).replace(':',"")) \
+        + " |Texto:" + str(pesoTexto) + " " + str(str(campoTexto).replace(':',"")) + "\n"
     	
     	archivo_salida.write(linea_salida)
 
@@ -64,6 +65,6 @@ def obtenerPromedio(setPath):
 
 
 def main():
-	parser(NOMBRE_ARCHIVO_ENTRADA, NOMBRE_ARCHIVO_SALIDA, 1, 0.5)
+	parser(NOMBRE_ARCHIVO_ENTRADA, NOMBRE_ARCHIVO_SALIDA, 1.0, 0.5)
 
 main()
