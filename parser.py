@@ -3,18 +3,23 @@
 
 import csv
 
-NOMBRE_ARCHIVO_ENTRADA = "data_train.csv"
-NOMBRE_ARCHIVO_SALIDA = "formato-rw.txt"
+ARCHIVO_ENTRADA_ENTRENAMIENTO = "data_train.csv"
+ARCHIVO_SALIDA_ENTRENAMIENTO = "data_train_vw.txt"
+ARCHIVO_ENTRADA_TEST = "data_test.csv"
+ARCHIVO_SALIDA_TEST = "data_test_vw.txt"
+
+
     
 #"Id","ProductId","UserId","ProfileName","HelpfulnessNumerator","HelpfulnessDenominator","Prediction","Time","Summary","Text"
 
-def parser(nombre_archivo_entrada, nombre_archivo_salida, pesoTexto, pesoResumen):
+def parser(nombre_archivo_entrada, nombre_archivo_salida, pesoTexto, pesoResumen, conPrediccion):
 
     try:
         #archivo_entrada = open(nombre_archivo_entrada)
         archivo_salida = open(nombre_archivo_salida, 'w')
     except IOError:
         print "Error al arir el archivo de entrada, más información: ", exc
+        return
 
     try:
         csvfile = open(nombre_archivo_entrada, 'rb')
@@ -22,16 +27,18 @@ def parser(nombre_archivo_entrada, nombre_archivo_salida, pesoTexto, pesoResumen
     except IOError as exc:
         print "Error al abrir el archivo de entrada, más información: ", exc
         archivo_salida.close()
+        return
+
+    promedioHelpDenom = obtenerPromedio(nombre_archivo_entrada)
 
     for linea in archivo_csv:
         tag = linea["Id"]
         resumen = linea["Summary"]
         texto = linea["Text"]
-        prediction = float(linea["Prediction"])
-        HelpNumerator = float(linea["HelpfulnessNumerator"])
-        HelpDenominator = float(linea["HelpfulnessDenominator"])
+        HelpNumerator = float(linea ["HelpfulnessNumerator"])
+        HelpDenominator = float(linea ["HelpfulnessDenominator"])
         if HelpDenominator != 0:
-            importancia = 1 + ((HelpNumerator/HelpDenominator)*(HelpDenominator/promedioHelpDenom))
+            importancia = 1 + ((HelpNumerator / HelpDenominator) * (HelpDenominator / promedioHelpDenom))
         else:
             importancia = 1
         base = 0
@@ -39,20 +46,25 @@ def parser(nombre_archivo_entrada, nombre_archivo_salida, pesoTexto, pesoResumen
         campoResumen = resumen
         campoTexto = texto
 
-        linea_salida = str(prediction) + " " + str(importancia) + " " + str(base) + " '" + str(tag) \
+        if (conPrediccion):
+            prediction = float(linea["Prediction"])
+            linea_salida = str(prediction) + " "
+        else:
+            linea_salida = ""
+
+        linea_salida += str(importancia) + " " + str(base) + " '" + str(tag) \
         + " |Resumen:" + str(pesoResumen) + " " + str(str(campoResumen).replace(':',"")) \
         + " |Texto:" + str(pesoTexto) + " " + str(str(campoTexto).replace(':',"")) + "\n"
         
         archivo_salida.write(linea_salida)
 
-        contador += 1
-    archivo_entrada.close()
+    csvfile.close()
     archivo_salida.close()
 
 
 def obtenerPromedio(setPath):
     with open(setPath, 'rb') as csvfile:
-        reader = csv.DictReader(csvfile, delimiter = ',', quotechar = '"')
+        reader = csv.DictReader(csvfile)
         contador = 0
         acumulador = 0
         for linea in reader:
@@ -63,6 +75,7 @@ def obtenerPromedio(setPath):
 
 
 def main():
-    parser(NOMBRE_ARCHIVO_ENTRADA, NOMBRE_ARCHIVO_SALIDA, 1.0, 0.5)
+    parser(ARCHIVO_ENTRADA_ENTRENAMIENTO, ARCHIVO_SALIDA_ENTRENAMIENTO, 1.0, 0.5, True)
+    parser(ARCHIVO_ENTRADA_TEST, ARCHIVO_SALIDA_TEST, 1.0, 0.5, False)
 
 main()
