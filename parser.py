@@ -3,7 +3,7 @@
 
 import csv
 
-NOMBRE_ARCHIVO_ENTRADA = "train.csv"
+NOMBRE_ARCHIVO_ENTRADA = "data_train.csv"
 NOMBRE_ARCHIVO_SALIDA = "formato-rw.txt"
 	
 #"Id","ProductId","UserId","ProfileName","HelpfulnessNumerator","HelpfulnessDenominator","Prediction","Time","Summary","Text"
@@ -14,7 +14,7 @@ def parser(nombre_archivo_entrada, nombre_archivo_salida, pesoTexto, pesoResumen
         #archivo_entrada = open(nombre_archivo_entrada)
         archivo_salida = open(nombre_archivo_salida, 'w')
         csvfile = open(nombre_archivo_entrada, 'rb')
-        archivo_csv = csv.reader(csvfile, delimiter = ',', quotechar = '"')
+        archivo_csv = csv.DictReader(csvfile)
     except IOError:
         print "¡Error! "
 
@@ -26,14 +26,16 @@ def parser(nombre_archivo_entrada, nombre_archivo_salida, pesoTexto, pesoResumen
     promedioHelpDenom = obtenerPromedio(nombre_archivo_entrada)
 
     for linea in archivo_csv:
-    	print contador
-    	tag = linea[1]
-    	resumen = linea[8]
-    	texto = linea[9]
-    	prediction = float(linea[6])
+    	tag = linea["Id"]
+    	resumen = linea["Summary"]
+    	texto = linea["Text"]
+        try:
+    	   prediction = float(linea["Prediction"])
 
-    	HelpNumerator = float(linea[4])
-    	HelpDenominator = float(linea[5])
+    	   HelpNumerator = float(linea["HelpfulnessNumerator"])
+    	   HelpDenominator = float(linea["HelpfulnessDenominator"])
+        except ValueError as exc:
+            print "Error al convertir a flotante, info: ", exc
     	if HelpDenominator != 0:
     		importancia = 1 + ((HelpNumerator/HelpDenominator)*(HelpDenominator/promedioHelpDenom))
     	else:
@@ -49,18 +51,18 @@ def parser(nombre_archivo_entrada, nombre_archivo_salida, pesoTexto, pesoResumen
     	
     	archivo_salida.write(linea_salida)
 
-    	contador = contador + 1
+    	contador += 1
 
 
 def obtenerPromedio(setPath):
 	with open(setPath, 'rb') as csvfile:
-		reader = csv.reader(csvfile, delimiter = ',', quotechar = '"')
+		reader = csv.DictReader(csvfile, delimiter = ',', quotechar = '"')
 		contador = 0
 		acumulador = 0
 		for linea in reader:
 			if contador != 0:
-				acumulador = acumulador + int(linea[5])
-			contador = contador + 1		
+				acumulador += int(linea["HelpfulnessDenominator"])
+			contador += 1		
 		return acumulador / float(contador)
 
 
