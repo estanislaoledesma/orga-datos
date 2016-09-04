@@ -18,24 +18,13 @@ def parser(nombre_archivo_entrada, nombre_archivo_salida, pesoTexto, pesoResumen
     except IOError:
         print "¡Error! "
 
-    linea_salida = []
-    unstringfeo = "vowpal no cabe: esta no le cabe:"
-    unstringlindo = str(unstringfeo).replace(':',"")
-    print unstringlindo
-    contador = 0
-    promedioHelpDenom = obtenerPromedio(nombre_archivo_entrada)
-
     for linea in archivo_csv:
     	tag = linea["Id"]
     	resumen = linea["Summary"]
     	texto = linea["Text"]
-        try:
-    	   prediction = float(linea["Prediction"])
-
-    	   HelpNumerator = float(linea["HelpfulnessNumerator"])
-    	   HelpDenominator = float(linea["HelpfulnessDenominator"])
-        except ValueError as exc:
-            print "Error al convertir a flotante, info: ", exc
+    	prediction = float(linea["Prediction"])
+   	    HelpNumerator = float(linea["HelpfulnessNumerator"])
+        HelpDenominator = float(linea["HelpfulnessDenominator"])
     	if HelpDenominator != 0:
     		importancia = 1 + ((HelpNumerator/HelpDenominator)*(HelpDenominator/promedioHelpDenom))
     	else:
@@ -52,6 +41,8 @@ def parser(nombre_archivo_entrada, nombre_archivo_salida, pesoTexto, pesoResumen
     	archivo_salida.write(linea_salida)
 
     	contador += 1
+    archivo_entrada.close()
+    archivo_salida.close()
 
 
 def obtenerPromedio(setPath):
