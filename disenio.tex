@@ -5,28 +5,28 @@
 \usepackage[ansinew]{inputenc}
 \usepackage[spanish]{babel}
 
-\title{		\textbf{Diseño del TP: Fine Foods Review}}
+\title{		\textbf{DiseÃ±o del TP: Fine Foods Review}}
 
-\author{	Martín Queija, \textit{Padrón Nro. 96.455}                     \\
+\author{	MartÃ­n Queija, \textit{PadrÃ³n Nro. 96.455}                     \\
             \texttt{ tinqueija@gmail.com }                                              \\[2.5ex]
-            Estanislao Ledesma, \textit{Padrón Nro. 96.622}                     \\
+            Estanislao Ledesma, \textit{PadrÃ³n Nro. 96.622}                     \\
             \texttt{ estanislaoledesma@gmail.com }                                              \\[2.5ex]
-            Martín Bosch, \textit{Padrón Nro. 00.000}                     \\
+            MartÃ­n Bosch, \textit{PadrÃ³n Nro. 00.000}                     \\
             \texttt{ agus.luques@hotmail.com }                                              \\[2.5ex]
             \normalsize{2do. Cuatrimestre de 2016}                                      \\
-            \normalsize{Organización de Datos  }  \\
-            \normalsize{Facultad de Ingeniería, Universidad de Buenos Aires}            \\
+            \normalsize{OrganizaciÃ³n de Datos  }  \\
+            \normalsize{Facultad de IngenierÃ­a, Universidad de Buenos Aires}            \\
        }
 \date{}
 
 \begin{document}
 
 \maketitle
-\thispagestyle{empty}   % quita el número en la primer página
+\thispagestyle{empty}   % quita el nÃºmero en la primer pÃ¡gina
 
 
 \begin{abstract}
-\centerline{Graficador de Conjuntos de Julia en formáto PGM}
+\centerline{AproximaciÃ³n por regresiÃ³n}
 
 \end{abstract}
 \newpage
@@ -34,24 +34,21 @@
 \tableofcontents
 
 
-\section{Introducción}
+\section{IntroducciÃ³n}
 
-Este trabajo práctico tiene como objetivo realizar un graficador de Conjuntos de Julia. Este tipo de fractal se obtiene iterando distintos puntos especificos del plano complejo sobre una función holomorfa. La intención es realizar un sólido programa de linea de comando y que a su vez posea una especifica validación de parámetros. En caso de error deberia indicar al usuario especificamente en que parámetro se equivocó para facilitar su solución. Finalmente el programa debe cumplir con los estandarés de imagenes PGM en escala de grises. Detalles relacionados a PGM estan indicados en el enunciado del TP.
+Aca va la introducciÃ³n
 
+\section{DiseÃ±o}
 
-\section{Diseño e implementación}
+Aca va el diseÃ±o
 
-Antes que nada, cabe informar que se utilizó una estructura llamada “complejo” para poder representarlos. La misma consiste de dos atributos de tipo float los cuales representan a la parte real e imaginaria del numero. El programa consiste primeramente en encontrar cada argumento indicado (pasado como parámetro al programa por línea de comandos), analizar si éstos son correctos, guardarlos en sus respectivas variables y, en caso de no ser correctos, informar el error y cortar la ejecución del programa.Todos los parámetros fueron guardados en variables estáticas, y en caso de no estar presentes se reemplazaron por aquellos dados en el enunciado por defecto. En caso de no poder crear un archivo de salida, también se sale del programa. Se escribió un programa secuencial completamente, sin el agregado de muchas estructuras adicionales ni funciones auxiliares, para que luego el seguimiento en lenguaje ensamblador sea más simple y entendible. El porgrama comienza con un ciclo switch en el que se almacenan todos los parámetros pasados al programa mediante línea de comandos, a través de la función getopt de la librería unistd. En caso de error, se sale del programa con EXIT-FAILURE. Para la verificación de la validez de los mismos se utilizaron distintas funciones auxiliares, como atoi para la conversión de string a entero, o sscanf para los parámetros que combinaban decimales y otros símbolos (como los complejos). En caso de error, se imprimen mensajes de error y se sale del programa con EXIT-FAILURE.La parte central del algoritmo, donde se itera en el plano complejo de forma discreta, se utilizan dos ciclos definidos for para el eje real y el eje imaginario, manteniendo un acumulador para definir el brillo del pixel, el cual luego es guardado en el archivo de salida. Para enontrar el paso de avance sobre los ejes del plano, se utilizó el cociente entre el alto o ancho y la resolución de la imagen, para el eje imaginario y real, respectivamente. La operación matemática que se realiza en el interior de los ciclos se implementó de la forma más eficiente posible encontrada, generando una única línea de código para la parte real e imaginaria, y usando una única variable temporal.
+\section{Otro titulo que podamos poner}
 
-\section{Como obtener el ejecutable y correr pruebas}
-
-Para mayor comodidad se dispone de un archivo llamado “script.sh” que al ejecutarlo (esto es, posicionándose sobre el directorio donde se encuentran los archivos y ejecutando el comando ./script.sh) automáticamente compilara el programa y ejecutará una serie de comandos de prueba y sus respectivas salidas.
-
+mas texto
 
 \section{Conclusiones}
 
-Se tarda poco en realizarse que el verdadero desafío que se presenta durante la codificación del programa es la validación de los párametros. El algorítmo para obtener el set de Julia es fácil de implementar y no debería de requerir funciones adicionales. Resultó interesante incrementar la resolución para la misma superficie compleja y observar cuan profundo se puede \textit{zoomear} en las imagenes resultantes.
-
+Nuestra conclusion
 
 \begin{thebibliography}{99}
 
