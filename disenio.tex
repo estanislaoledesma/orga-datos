@@ -53,6 +53,17 @@
 	\subsection{Apache Spark}
 	El manejo de datos será responsabilidad de Spark. Apache Spark es un framework para implementar \textit{cluster computing.} Spark nos permite manipular el set de datos paralelamente de manera eficiente. 
 	
+	\subsection{BOW (Bag of words)}
+	El enunciado del trabajo práctico indica que es posible realizar una regresión con un alto grado de efectividad utilizando unicamente los campos de texto (Resumen y descripción) que compone cada reseña. Procesar textos escritos por humanos contemplando la sintaxis, grámatica y puntuación propone un problema de alta complejidad. Aún con un procesador de texto que contemple estas características de manera acertada existen muchas situaciones en las que ciertas combinaciones de palabras pueden tener doble significado o transmitir valor emocional que resulta casi imposible de parametrizar.
+	
+	Bag of words es una implementacion para pasar datos de texto a valores numericos (vectores). Se utiliza un diccionario con todas las posibles palabras que puedan aparecer y cada linea de texto se vectoriza notando la frecuencia de las palabras que contiene con respecto al diccionario. Esta aproximación ignora el orden de las palabras, todo tipo de gramatica y la sintaxis. Utilizar este metodo tratando cada palabra como una única \textit{feature} propone que no se van a diferenciar casos tales como "La comida no era buena" de "La comida era buena".
+	
+	\subsection{N-Grams (Bag of N-Grams)}
+	Aquí es donde entra el papel de los n-gramas, este modelo propone vectorizar las \textit{features} pero contemplando una determinadad cantidad de palabras N de contexto. Esta implementación nos permite diferenciar los casos que la simple implementación de BOW no permite.
+	El texto: "La comida no era buena" se parametriza de la sigueinte manera: \{"La comida no", "comida no era", "no era buena"\}. Luego, se vectoriza ubicando las frecuencias de las ocurrencias.
+	
+	\subsection{El problema de la dimensionalidad}
+	Los N-gramas tienen una gran influencia en la presición de las predicciones. Utilizar N-gramas de mayor grado proporciona mejor interpretación de las \textit{Bags of Words} a costas de incrementar de manera exponencial la dimension de los vectores resultantes. Esto se traduce directamente en un alto costo computacional. Estos vectores son altamente dispersos
 	
 	\section{Otro titulo que podamos poner}
 	
