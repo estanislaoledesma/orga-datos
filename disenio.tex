@@ -65,11 +65,15 @@
 	Aquí es donde entra el papel de los n-gramas, este modelo propone vectorizar las \textit{features} pero contemplando una determinadad cantidad de palabras N de contexto. Esta implementación nos permite diferenciar los casos que la simple implementación de BOW no permite.
 	El texto: "La comida no era buena" se parametriza de la sigueinte manera: \{"La comida no", "comida no era", "no era buena"\}. Luego, se vectoriza ubicando las frecuencias de las ocurrencias.
 	
+	\subsection{Diccionarios?}
+	La implementación de los N-Gramas recientemente mencionada propone una primera pasada al set de datos para generar el vector con todas las distintas ocurrencias presentes. Esto genera un vector de \textit{features} de alta dimensionalidad ademas de requerir una pasada más de preproceso. Una solución es aplicar la técnica llamada \textit{Feature Hashing}. Esta técnica nos permite generar el \textit{Feature Vector} donde el índice de cada \textit{feature} lo indica la funcion de hashing. La dimension del \textit{Feature Vector} la establecemos en el espacio de salida de la función de hashing. Si la dimensión de salida de la función de hash es menor a la cantidad de ocurrencias distintas en el set de entrenamiento palabras o \textit{features} similares seran consideradas como la misma ocurrencia. Esto determina un hyper-parámetro para nuestro algorítmo: La dimension de los \textit{Feature Vectors.}
+	
+	
 	\subsection{El problema de la dimensionalidad}
 	Los N-gramas tienen una gran influencia en la presición de las predicciones. Utilizar N-gramas de mayor grado proporciona mejor interpretación de las \textit{Bags of Words} a costas de incrementar de manera exponencial la dimension de los vectores resultantes. Esto se traduce directamente en un alto costo computacional. Estos vectores son altamente dispersos, en otras palabras, se almacena mucha información prescindible.
 	
 	\subsection{Reducción de la dimensionalidad}
-	La información prescindible son dimensiones de más que contiene el vector. 
+	La información prescindible son dimensiones de más que contiene el vector. Existen diversos métodos de reducción de dimensiones
 	
 	\section{Otro titulo que podamos poner}
 	
