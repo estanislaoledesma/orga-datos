@@ -114,6 +114,10 @@
 
 	A la hora de seleccionar funciones de hashing que ser\'{a}n utilizadas, como en LSH, donde se debe usar una gran cantidad de las mismas, se opta por las familias universales de Carter-Wegman. Se elige una familia universal ya que posee una baja probabilidad de colisiones para distintos objetos hasheados, y un grado alto de libertad al poder elegir los par\'{a}metros de las mismas. Para lograr mejores resultados, y generar la menor cantidad de errores de similitud (falsos positivos y negativos), es probable que se utilice un n\'{u}mero alto de funciones de hashing, no solamente utilizando la familia de Carter-Wegman sino que tambi\'{e}n se opta por combinar con funciones cl\'{a}sicas como Jenkins, City Hash y FNV.
 	Tambi\'{e}n es probable que, al utilizar N-gramas, se puede aprovechar el proceso de armado de los mismos para incorporar la modalidad de hashing deslizante y as\'{i} obtener una gama bastante amplia de hashes, para reducir el esfuerzo computacional de comparaci\'{o}n de textos al m\'{a}ximo.
+
+	\subsection{Otros algoritmos}
+
+	Para obtener mejores predicciones, no basadas solamente en KNN, se cree necesaria la utilizaci\'{o}n de otros algoritmos que resultan \'{u}tiles a la hora de realizar regresiones. Es posible que al generar resultados con algoritmos como Decision Trees, Support Vector Machine, Hidden Markov Models, Neural Networks (entre otros) puedan aportar nuevos enfoques a los resultados, ya que estos utilizan otros criterios y son muy utilizados en la miner\'{i}a de datos y el procesamiento de lenguaje natural. Es por esto que, si se generan distintas predicciones y de todas ellas se realiza un promedio (por tratarse de regresiones) se pueda hallar el mejor resultado posible. El promedio probablemente deba ser ponderado, en cuyo caso los pesos de cada algoritmo se generan con prueba y error, comparando los mejores resultados en el set de entrenamiento.
 	
 	\begin{thebibliography}{99}
 		\bibitem{INT06} LSH (Locality Sensitive Hashing, WikiPedia, https://en.wikipedia.org/wiki/Locality\-sensitive\_hashing
