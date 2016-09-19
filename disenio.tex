@@ -53,7 +53,7 @@
 	
 	El mecanismo de KNN consiste en encontrar los K-Vecinos mas cercanos a la nueva instancia de datos que queremos clasificar. Para clasificaci\'{o}n se predice la clase mayoritaria entre los K-Vecinos. Para regresi\'{o}n se calcula el promedio.
 	
-	El hyperpar\'{a}metro K se deduce a partir de prueba y error. Probaremos diferentes valores de K para encontrar el que mejor ajuste a nuestro set de datos.
+	El hyperpar\'{a}metro K se deduce a partir de una grid search, es decir, a partir de prueba y error probaremos diferentes valores de K para encontrar el que mejor ajuste a nuestro set de datos.
 	
 	\subsection{Apache Spark}
 	El manejo de datos ser\'{a} responsabilidad de Spark. Apache Spark es un framework para implementar \textit{cluster computing.} Spark nos permite manipular el set de datos paralelamente de manera eficiente. 
@@ -61,7 +61,7 @@
 	\subsection{BOW (Bag of words)}
 	El enunciado del trabajo pr\'{a}ctico indica que es posible realizar una regresi\'{o}n con un alto grado de efectividad utilizando unicamente los campos de texto (Resumen y descripci\'{o}n) que compone cada rese\~{n}a. Procesar textos escritos por humanos contemplando la sintaxis, gramatica y puntuaci\'{o}n propone un problema de alta complejidad. A\'{u}n con un procesador de texto que contemple estas caracter\'{i}sticas de manera acertada existen muchas situaciones en las que ciertas combinaciones de palabras pueden tener doble significado o transmitir valor emocional que resulta casi imposible de parametrizar.
 	
-	Bag of words es una implementaci\'{o}n para pasar datos de texto a valores num\'{e}ricos (vectores). Se utiliza un diccionario con todas las posibles palabras que puedan aparecer y cada linea de texto se vectoriza notando la frecuencia de las palabras que contiene con respecto al diccionario. Esta aproximaci\'{o}n ignora el orden de las palabras, todo tipo de gram\'{a}tica y la sintaxis. Utilizar este m\'{e}todo tratando cada palabra como una \'{u}nica \textit{feature} propone que no se van a diferenciar casos tales como "La comida no era buena" de "La comida era buena".
+	Bag of words es una implementaci\'{o}n para pasar datos de texto a valores num\'{e}ricos (vectores). Se utiliza un diccionario con todas las posibles palabras que puedan aparecer y cada linea de texto se vectoriza notando la frecuencia de las palabras que contiene con respecto al diccionario. Esta aproximaci\'{o}n ignora el orden de las palabras, todo tipo de gram\'{a}tica y la sintaxis. Pero utilizar este m\'{e}todo tratando cada palabra como una \'{u}nica \textit{feature} propone que no se van a diferenciar casos tales como "La comida no era buena" de "La comida era buena".
 	
 	\subsection{N-Grams (Bag of N-Grams)}
 	Aqu\'{i} es donde entra el papel de los n-gramas, este modelo propone vectorizar las \textit{features} pero contemplando una determinadad cantidad de palabras N de contexto. Esta implementaci\'{o}n nos permite diferenciar los casos que la simple implementaci\'{o}n de BOW no permite.
@@ -84,7 +84,9 @@
 	
 	\subsection{LSH}
 	
-	explicar lsh, lo que se hace es que obtenemos de un review el feature vector y con lsh lo hasheamos a un bucket y de ahi obtenemos los similares y con ellos hacemos el promedio de la regresion para la calificacion
+	Para evitar calcular por fueza bruta las distancias al aplicar KNN, utilizaremos LSH. Entonces dado el texto que queremos clasificar aplicamos una funcion de hashing y accedemos al bucket de la tabla de hash señalado por la misma, medimos las distancias con respecto a los elementos en el bucket y nos quedamos con los mas cercanos. Para reducir los falsos positivos utilizaremos mas de una funcion de hash o minihash, supongamos r, obteniendolas de las familias universales de Carter-Wegman o las clasicas como Jenkins. Y para reducir los falsos negativos agruparemos estos minihash en b grupos, es decir, que vamos a tener b tablas de hash con T cantidad de buckets cada una.
+	 Los hiperparametros b, r y T seran determinados de la siguiente manera: primero se determinara el b mas grande posible en base a la memoria disponible, para asi tener mayor presicion. Luego determinaremos r y T utilizando una grid search teniendo en cuenta la performance del algoritmo.
+
 	
 	\section{Conclusiones}
 	
