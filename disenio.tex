@@ -84,7 +84,7 @@
 	
 	\subsection{LSH}
 	
-	Para evitar calcular por fueza bruta las distancias al aplicar KNN, utilizaremos LSH. Entonces dado el texto que queremos clasificar aplicamos una funcion de hashing y accedemos al bucket de la tabla de hash señalado por la misma, medimos las distancias con respecto a los elementos en el bucket y nos quedamos con los mas cercanos. Para reducir los falsos positivos utilizaremos mas de una funcion de hash o minihash, supongamos r, obteniendolas de las familias universales de Carter-Wegman o las clasicas como Jenkins. Y para reducir los falsos negativos agruparemos estos minihash en b grupos, es decir, que vamos a tener b tablas de hash con T cantidad de buckets cada una.
+	Para evitar calcular por fueza bruta las distancias al aplicar KNN, utilizaremos LSH. Entonces dado el texto que queremos clasificar aplicamos una funcion de hashing y accedemos al bucket de la tabla de hash señalado por la misma, medimos las distancias con respecto a los elementos en el bucket y nos quedamos con los mas cercanos. Para reducir los falsos positivos (afectan la performance) utilizaremos mas de una funcion de hash o minihash, supongamos r funciones, obteniendolas de las familias universales de Carter-Wegman o las clasicas como Jenkins. Y para reducir los falsos negativos (afectan la precision) agruparemos estos minihash en b grupos, es decir, que vamos a tener b tablas de hash con T cantidad de buckets cada una.
 	 Los hiperparametros b, r y T seran determinados de la siguiente manera: primero se determinara el b mas grande posible en base a la memoria disponible, para asi tener mayor presicion. Luego determinaremos r y T utilizando una grid search teniendo en cuenta la performance del algoritmo.
 
 	
