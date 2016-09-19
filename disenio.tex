@@ -5,28 +5,30 @@
 \usepackage[ansinew]{inputenc}
 \usepackage[spanish]{babel}
 
-\title{		\textbf{Diseño del TP: Fine Foods Review}}
+\title{	\textbf{Dise\~{n}o del TP: Fine Foods Review} }
 
-\author{	Martín Queija, \textit{Padrón Nro. 96.455}                     \\
-	\texttt{ tinqueija@gmail.com }                                              \\[2.5ex]
-	Estanislao Ledesma, \textit{Padrón Nro. 96.622}                     \\
-	\texttt{ estanislaoledesma@gmail.com }                                              \\[2.5ex]
-	Martín Bosch, \textit{Padrón Nro. 00.000}                     \\
-	\texttt{ agus.luques@hotmail.com }                                              \\[2.5ex]
-	\normalsize{2do. Cuatrimestre de 2016}                                      \\
-	\normalsize{Organización de Datos  }  \\
-	\normalsize{Facultad de Ingeniería, Universidad de Buenos Aires}            \\
+\author{
+    Mart\'{i}n Queija, \textit{Padr\'{o}n Nro. 96.455} \\
+	\texttt{ tinqueija@gmail.com } \\[2.5ex]
+	Estanislao Ledesma, \textit{Padr\'{o}n Nro. 96.622} \\
+	\texttt{ estanislaoledesma@gmail.com } \\[2.5ex]
+	Mart\'{i}n Bosch, \textit{Padr\'{o}n Nro. 96.749} \\
+	\texttt{ martinbosch17@gmail.com } \\[2.5ex]
+	\normalsize{2do. Cuatrimestre de 2016} \\
+	\normalsize{ Organizaci\'{o}n de Datos } \\
+	\normalsize{ Facultad de Ingenier\'{i}a, Universidad de Buenos Aires } \\
 }
+
 \date{}
 
 \begin{document}
-	
+
 	\maketitle
 	\thispagestyle{empty}   % quita el número en la primer página
-	
-	
+
+
 	\begin{abstract}
-		\centerline{Aproximación por regresión}
+		\centerline{Aproximaci\'{o}n por regresi\'{o}n}
 		
 	\end{abstract}
 	\newpage
@@ -34,50 +36,50 @@
 	\tableofcontents
 	
 	
-	\section{Introducción}
+	\section{Introducci\'{o}n}
 	
-	El objetivo de este trabajo práctico es predecir la puntuación de distintas reseñas de comidas.
+	El objetivo de este trabajo pr\'{a}ctico es predecir la puntuaci\'{o}n de distintas rese\~{n}as de comidas.
 	
-	\section{Diseño}
+	\section{Dise\~{n}o}
 	
-	Para alcanzar el objetivo, la intención es diseñar un algoritmo que \textit{aprenda} a partir de un set de reseñas ya puntuadas para así poder predecir la calificación de nuevas reseñas. Parte del set de reseñas ya puntuadas se reserva para probar el "aprendisaje" del algorítmo. De esta manera se puede determinar la presicion del algorítmo al predecir reseñas y comparar la predicción con el valor esperado. La comparacion utilizada se denomina Mean Squared Error y se calcula sumatoria total de los errores al cuadrado sobre el total de puntos. Esta relación proporciona un grado de confianza sobre nuestro algorítmo para predecir puntuaciones de nuevas reseñas.
+	Para alcanzar el objetivo, la intenci\'{o}n es dise\~{n}ar un algoritmo que \textit{aprenda} a partir de un set de rese\~{n}as ya puntuadas para as\'{i} poder predecir la calificaci\'{o}n de nuevas rese\~{n}as. Parte del set de rese\~{n}as ya puntuadas se reserva para probar el "aprendisaje" del algortmo. De esta manera se puede determinar la presicion del algor\'{i}tmo al predecir rese\~{n}as y comparar la predicci\'{o}n con el valor esperado. La comparacion utilizada se denomina Mean Squared Error y se calcula sumatoria total de los errores al cuadrado sobre el total de puntos. Esta relaci\'{o}n proporciona un grado de confianza sobre nuestro algor\'{i}tmo para predecir puntuaciones de nuevas rese\~{n}as.
 	
 	
 	\subsection{Preprocesamiento de los datos}	
-	En una primera instancia es recomendable extraer toda la puntuación de los datos crudos para no desperdiciar \textit{features} con símbolos que a la escencia de la implementación no hacen de utilidad.
+	En una primera instancia es recomendable extraer toda la puntuaci\'{o}n de los datos crudos para no desperdiciar \textit{features} con s\'{i}mbolos que a la escencia de la implementaci\'{o}n no hacen de utilidad.
 	
 	\subsection{KNN}
-	La base del diseño se basa en el método de reconocimiento de patrones llamado KNN (K-Nearest-Neighbour). Este método es aplicable para realizar regresión o clasificación. El set de datos provisto califica las reseñas con enteros del 1 al 5. Sin embargo el enunciado afirma que nuestro algorítmo puede predecir valores no enteros en el intervalo [1,5]. Por lo tanto establecemos que nuestro método de predicción sera regresivo.
+	La base del dise\~{n}o se basa en el m\'{e}todo de reconocimiento de patrones llamado KNN (K-Nearest-Neighbour). Este m\'{e}todo es aplicable para realizar regresi\'{o}n o clasificaci\'{o}n. El set de datos provisto califica las rese\~{n}as con enteros del 1 al 5. Sin embargo el enunciado afirma que nuestro algort\'{i}mo puede predecir valores no enteros en el intervalo [1,5]. Por lo tanto establecemos que nuestro m\'{e}todo de predicci\'{o}n sera regresivo.
 	
-	El mecanismo de KNN consiste en encontrar los K-Vecinos mas cercanos a la nueva instancia de datos que queremos clasificar. Para clasificación se predice la clase mayoritaria entre los K-Vecinos. Para regresión se calcula el promedio.
+	El mecanismo de KNN consiste en encontrar los K-Vecinos mas cercanos a la nueva instancia de datos que queremos clasificar. Para clasificaci\'{o}n se predice la clase mayoritaria entre los K-Vecinos. Para regresi\'{o}n se calcula el promedio.
 	
-	El hyperparámetro K se deduce a partir de prueba y error. Probaremos diferentes valores de K para encontrar el que mejor ajuste a nuestro set de datos.
+	El hyperpar\'{a}metro K se deduce a partir de prueba y error. Probaremos diferentes valores de K para encontrar el que mejor ajuste a nuestro set de datos.
 	
 	\subsection{Apache Spark}
-	El manejo de datos será responsabilidad de Spark. Apache Spark es un framework para implementar \textit{cluster computing.} Spark nos permite manipular el set de datos paralelamente de manera eficiente. 
+	El manejo de datos ser\'{a} responsabilidad de Spark. Apache Spark es un framework para implementar \textit{cluster computing.} Spark nos permite manipular el set de datos paralelamente de manera eficiente. 
 	
 	\subsection{BOW (Bag of words)}
-	El enunciado del trabajo práctico indica que es posible realizar una regresión con un alto grado de efectividad utilizando unicamente los campos de texto (Resumen y descripción) que compone cada reseña. Procesar textos escritos por humanos contemplando la sintaxis, grámatica y puntuación propone un problema de alta complejidad. Aún con un procesador de texto que contemple estas características de manera acertada existen muchas situaciones en las que ciertas combinaciones de palabras pueden tener doble significado o transmitir valor emocional que resulta casi imposible de parametrizar.
+	El enunciado del trabajo pr\'{a}ctico indica que es posible realizar una regresi\'{o}n con un alto grado de efectividad utilizando unicamente los campos de texto (Resumen y descripci\'{o}n) que compone cada rese\~{n}a. Procesar textos escritos por humanos contemplando la sintaxis, gramatica y puntuaci\'{o}n propone un problema de alta complejidad. A\'{u}n con un procesador de texto que contemple estas caracter\'{i}sticas de manera acertada existen muchas situaciones en las que ciertas combinaciones de palabras pueden tener doble significado o transmitir valor emocional que resulta casi imposible de parametrizar.
 	
-	Bag of words es una implementacion para pasar datos de texto a valores numericos (vectores). Se utiliza un diccionario con todas las posibles palabras que puedan aparecer y cada linea de texto se vectoriza notando la frecuencia de las palabras que contiene con respecto al diccionario. Esta aproximación ignora el orden de las palabras, todo tipo de gramatica y la sintaxis. Utilizar este metodo tratando cada palabra como una única \textit{feature} propone que no se van a diferenciar casos tales como "La comida no era buena" de "La comida era buena".
+	Bag of words es una implementaci\'{o}n para pasar datos de texto a valores num\'{e}ricos (vectores). Se utiliza un diccionario con todas las posibles palabras que puedan aparecer y cada linea de texto se vectoriza notando la frecuencia de las palabras que contiene con respecto al diccionario. Esta aproximaci\'{o}n ignora el orden de las palabras, todo tipo de gram\'{a}tica y la sintaxis. Utilizar este m\'{e}todo tratando cada palabra como una \'{u}nica \textit{feature} propone que no se van a diferenciar casos tales como "La comida no era buena" de "La comida era buena".
 	
 	\subsection{N-Grams (Bag of N-Grams)}
-	Aquí es donde entra el papel de los n-gramas, este modelo propone vectorizar las \textit{features} pero contemplando una determinadad cantidad de palabras N de contexto. Esta implementación nos permite diferenciar los casos que la simple implementación de BOW no permite.
+	Aqu\'{i} es donde entra el papel de los n-gramas, este modelo propone vectorizar las \textit{features} pero contemplando una determinadad cantidad de palabras N de contexto. Esta implementaci\'{o}n nos permite diferenciar los casos que la simple implementaci\'{o}n de BOW no permite.
 	El texto: "La comida no era buena" se parametriza de la sigueinte manera: \{"La comida no", "comida no era", "no era buena"\}. Luego, se vectoriza ubicando las frecuencias de las ocurrencias.
 	
 	\subsection{El problema de la dimensionalidad}
-	Los N-gramas tienen una gran influencia en la presición de las predicciones. Utilizar N-gramas de mayor grado proporciona mejor interpretación de las \textit{Bags of Words} a costas de incrementar de manera exponencial la dimension de los vectores resultantes. Esto se traduce directamente en un alto costo computacional. Estos vectores son altamente dispersos, en otras palabras, se almacena mucha información prescindible.
+	Los N-gramas tienen una gran influencia en la presici\'{o}n de las predicciones. Utilizar N-gramas de mayor grado proporciona mejor interpretaci\'{o}n de las \textit{Bags of Words} a costas de incrementar de manera exponencial la dimension de los vectores resultantes. Esto se traduce directamente en un alto costo computacional. Estos vectores son altamente dispersos, en otras palabras, se almacena mucha informaci\'{o}n prescindible.
 	
-	\subsection{Diccionarios?}
-	La implementación de los N-Gramas recientemente mencionada propone una primera pasada al set de datos para generar el vector con todas las distintas ocurrencias presentes. Esta implementación requiere de una primera pasada de preproceso para armar el diccionario y luego cada dato genera su vector buscando los indicies que contienen las palabras que lo componen en el diccionario. Esta solución propone busquedas en arreglos: aunque hoy en dia existen optimos metodos para ordenar arreglos y realizar busquedas eficientes, la capacidad computacional que requiere es muy superior a utilizar funciones de hash.
+	\subsection{Diccionarios}
+	La implementaci\'{o}n de los N-Gramas recientemente mencionada propone una primera pasada al set de datos para generar el vector con todas las distintas ocurrencias presentes. Esta implementaci\'{o}n requiere de una primera pasada de preproceso para armar el diccionario y luego cada dato genera su vector buscando los indicies que contienen las palabras que lo componen en el diccionario. Esta soluci\'{o}n propone busquedas en arreglos: aunque hoy en dia existen \'{o}ptimos metodos para ordenar arreglos y realizar b\'{u}squedas eficientes, la capacidad computacional que requiere es muy superior a utilizar funciones de hash.
 	
-	El \textit{Feature Vector} se puede obtener aplicando la tecnica llamada \textit{Feature Hashing}, donde cada feature del dato obtiene su indice de representación en el \textit{Feature Vector} a partir de una función de hash. Velóz, simple y eficiente.
+	El \textit{Feature Vector} se puede obtener aplicando la tecnica llamada \textit{Feature Hashing}, donde cada feature del dato obtiene su indice de representaci\'{o}n en el \textit{Feature Vector} a partir de una funci\'{o}n de hash. Vel\'{o}z, simple y eficiente.
 	
 	En consecuencia el \textit{Feature Vector} suele ser un vector de gran dimensionalidad. Combinado con la gran dimensionalidad que presentan los N-Gramas se consideran vectores computacionalmente costosos de manipular.
 	
-	\subsection{Reducción de la dimensionalidad}
+	\subsection{Reducci\'{o}n de la dimensionalidad}
 	
-	Existen diversos métodos de reducción de dimensionalidad. Estos métodos son conocidos y sirven porque mantienen las distancias entre los puntos. De esta manera, podemos decrementar de manera significativa la cantidad de dimensiones del \textit{Feature Vector}.
+	Existen diversos m\'{e}todos de reducci\'{o}n de dimensionalidad. Estos m\'{e}todos son conocidos y sirven porque mantienen las distancias entre los puntos. De esta manera, podemos decrementar de manera significativa la cantidad de dimensiones del \textit{Feature Vector}.
 	
 	
 	\subsection{LSH}
@@ -86,14 +88,14 @@
 	
 	\section{Conclusiones}
 	
-	Nuestra conclusion
+	Nuestra conclusi\'{o}n
 	
 	\begin{thebibliography}{99}
-		\bibitem{INT06} LSH (Locality Sensitive Hashing, WikiPedia, https://en.wikipedia.org/wiki/Locality-sensitive_hashing
-		\bibitem{INT06} Data Paralelism , WikiPedia, https://en.wikipedia.org/wiki/Data_parallelism.
-		\bibitem{INT06} KNN (K Vecinos mas cercanos), WikiPedia, https://es.wikipedia.org/wiki/K-vecinos_m%C3%A1s_cercano
-		\bibitem{INT06} Apache Spark, WikiPedia,https://en.wikipedia.org/wiki/Apache_Spark
-		\bibitem{INT06} Programacion neurolinguistica, https://es.wikipedia.org/wikiProgramaci%C3%B3n_neuroling%C3%BC%C3%ADstica
+		\bibitem{INT06} LSH (Locality Sensitive Hashing, WikiPedia, https://en.wikipedia.org/wiki/Locality\-sensitive\_hashing
+		\bibitem{INT06} Data Paralelism , WikiPedia, https://en.wikipedia.org/wiki/Data\_parallelism.
+		\bibitem{INT06} KNN (K Vecinos mas cercanos), WikiPedia, https://es.wikipedia.org/wiki/K\-vecinos\_m\%C3\%A1s\_cercano
+		\bibitem{INT06} Apache Spark, WikiPedia,https://en.wikipedia.org/wiki/Apache\_Spark
+		\bibitem{INT06} Programacion neurolinguistica, https://es.wikipedia.org/wikiProgramaci\%C3\%B3n\_neuroling\%C3\%BC\%C3\%ADstica
 		\bibitem{INT06} Apunte oficial de la materia, Luis Argerich
 
 	\end{thebibliography}
