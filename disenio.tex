@@ -77,17 +77,12 @@
 	
 	\subsection{Reducción de la dimensionalidad}
 	
-	Existen diversos métodos de reducción de dimensionalidad. Estos métodos son conocidos por mantener las distancias entre los puntos.
+	Existen diversos métodos de reducción de dimensionalidad. Estos métodos son conocidos y sirven porque mantienen las distancias entre los puntos. De esta manera, podemos decrementar de manera significativa la cantidad de dimensiones del \textit{Feature Vector}.
 	
-	creo que esto no va: --------------
-	Esto genera un vector de \textit{features} de alta dimensionalidad ademas de requerir una pasada más de preproceso. Una solución es aplicar la técnica llamada \textit{Feature Hashing}. Esta técnica nos permite generar el \textit{Feature Vector} donde el índice de cada \textit{feature} lo indica la funcion de hashing. La dimension del \textit{Feature Vector} la establecemos en el espacio de salida de la función de hashing. Si la dimensión de salida de la función de hash es menor a la cantidad de ocurrencias distintas en el set de entrenamiento palabras o \textit{features} similares seran consideradas como la misma ocurrencia. Esto determina un hyper-parámetro para nuestro algorítmo: La dimension de los \textit{Feature Vectors.}
 	
-	------------
-
+	\subsection{LSH}
 	
-	\section{Otro titulo que podamos poner}
-	
-	mas texto
+	explicar lsh, lo que se hace es que obtenemos de un review el feature vector y con lsh lo hasheamos a un bucket y de ahi obtenemos los similares y con ellos hacemos el promedio de la regresion para la calificacion
 	
 	\section{Conclusiones}
 	
