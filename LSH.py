@@ -32,18 +32,18 @@ def dame_shingles_words(texto, cantidadPalabras, maxLargoPalabra):
 
 def dame_minhashes_shingles(shingles):
 	minhashes = []
-	for i in range(cantHashes):
+	for i in range(cantHashes): #Para cada función de hash
 		minhash = maxint
 
 
-		if shingleaWords:
+		if shingleaWords: #Si usé shingles de palabras
 			for conjunto in shingles:
-				for shingle in conjunto:
-					shingle += hashDisplaces[i]
-					esteHash = abs(hash(shingle))
+				for shingle in conjunto: 
+					shingle += hashDisplaces[i] #Obtengo un nuevo shingle a partir de un hashDisplace, para cambiar el valor de hash
+					esteHash = abs(hash(shingle)) #Obtengo el hash del shingle
 					if esteHash < minhash:
-						minhash = esteHash
-		else:
+						minhash = esteHash #Si este hash es menor al minimo, se guarda
+		else: #Si usé shingles de chars
 			for shingle in shingles:
 				shingle += hashDisplaces[i]
 				esteHash = abs(hash(shingle))
@@ -52,18 +52,18 @@ def dame_minhashes_shingles(shingles):
 
 
 
-		minhashes.append(minhash)
+		minhashes.append(minhash) #Guardo el minhash para la actual función de hash
 	return minhashes
 
 def dame_hash_bandas(minhashes):
 	codigosBandas = []
 	hashBanda = 0
-	for i in range(cantHashes):
-		if (i % hashesPorBanda == 0 and i > 0):
-			codigosBandas.append(hashBanda)
+	for i in range(cantHashes): #Para cada función de hash
+		if (i % hashesPorBanda == 0 and i > 0): #Para diferenciar las bandas
+			codigosBandas.append(hashBanda) #Guaro el nuevo hash de la banda
 			hashBanda = 0
-		hashBanda += hash(minhashes[i])
-	codigosBandas.append(hashBanda)
+		hashBanda += hash(minhashes[i]) #Obtengo un nuevo hash para la banda como la suma de todos los hashes de la misma (Para comparar)
+	codigosBandas.append(hashBanda) #Guardo los hashes de banda en una lista, para luego asociarlos a un valor de predicción
 	return codigosBandas
 
 def proc_texto_rating(texto, rating):
