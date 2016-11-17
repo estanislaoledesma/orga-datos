@@ -180,7 +180,7 @@ def calcScore(bandas):
 
 
 sc = SparkContext(conf = SparkConf())
-learn = sc.textFile('/media/tino/Tera/bigdata/parsedTrainSmall.csv',8)
+learn = sc.textFile('parsedTrainSmall.csv',8)
 
 learn = learn.map(lambda x: x.split('|')).map(lambda x: (x[0],x[2], dame_hash_bandas(dame_minhashes_shingles2(dame_shingles_words(x[1],3,15)))))
 learn = learn.flatMap(lambda x: flatmapeo(x[0], x[1], x[2])) #(u'a9wx8dk93sn5', u'1.0', 813759583895638922)
@@ -200,7 +200,7 @@ for a in data:
 #dicto = learn.collectAsMap()
 
 try:
-	shutil.rmtree('/media/tino/Tera/bigdata/finalout.csv')
+	shutil.rmtree('finalout.csv')
 except:
 	print "Folder does not exist."
 
@@ -215,7 +215,7 @@ except:
 #
 
 
-test = sc.textFile('/media/tino/Tera/bigdata/parsedTestSmall.csv',8)
+test = sc.textFile('parsedTestSmall.csv',8)
 test = test.map(lambda x: x.split('|')).map(lambda x: (x[0],x[2], dame_hash_bandas(dame_minhashes_shingles2(dame_shingles_words(x[1],3,15)))))
 test = test.map(lambda x: (x[0],x[1],calcScore(x[2])))
 cantReviewsToPredict = test.count()
@@ -223,10 +223,10 @@ test = test.filter(lambda x: x[2] != -1)
 cantReviewsPredicted = test.count()
 
 try:
-	shutil.rmtree('/media/tino/Tera/bigdata/scores.csv')
+	shutil.rmtree('scores.csv')
 except:
 	print "Folder does not exist."
-test.saveAsTextFile('/media/tino/Tera/bigdata/scores.csv')
+test.saveAsTextFile('scores.csv')
 
 print "REVIEWS A PREDECIR: " + str(cantReviewsToPredict)
 print "REVIEWS CON SCORE: " + str(cantReviewsPredicted)
