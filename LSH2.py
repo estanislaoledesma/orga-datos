@@ -184,20 +184,24 @@ def calcScore(bandas):
 sc = SparkContext(conf = SparkConf())
 learn = sc.textFile('parsedTrainSmall.csv',8)
 
-learn = learn.map(lambda x: x.split('|')).map(lambda x: (x[0],x[2], dame_hash_bandas(dame_minhashes_shingles2(dame_shingles_words(x[1],3,15)))))
-learn = learn.flatMap(lambda x: flatmapeo(x[0], x[1], x[2])) #(u'a9wx8dk93sn5', u'1.0', 813759583895638922)
-learn = learn.map(lambda x: (x[2], x[1]))
-data = learn.collect()
+learn = learn.map(lambda x: x.split('|')).map(lambda x: (x[0],x[2], dame_minhashes_shingles2(dame_shingles_words(x[1],3,15))))
 
 from pyspark.mllib.tree import DecisionTree, DecisionTreeModel
 from pyspark.mllib.regression import LabeledPoint
 from pyspark.mllib.linalg import DenseVector
 
-data_for_decision_tree = learn.map(lambda x: LabeledPoint(x [0], DenseVector(x[1])))
+data_for_decision_tree = learn.map(lambda x: LabeledPoint(label = x [1], features = DenseVector(x[2])))
 (dataTrain, dataTest) = data_for_decision_tree.randomSplit([0.7, 0.3])
 model = DecisionTree.trainRegressor(dataTrain, categoricalFeaturesInfo={}, impurity='variance', maxDepth=5, maxBins=32)
 predictions = model.predict(dataTest.map(lambda x: x.features))
-print predictions.collect()
+labelsAndPredictions = dataTest.map(lambda x: x.label).zip(predictions)
+testMSE = labelsAndPredictions.map(lambda (v, p): (v - p) * (v - p)).sum() / float(dataTest.count())
+print "MSE = %f"%(testMSE)
+
+learn = learn.map(lambda x: (x[0],x[1], dame_hash_bandas(x[2])))
+learn = learn.flatMap(lambda x: flatmapeo(x[0], x[1], x[2])) #(u'a9wx8dk93sn5', u'1.0', 813759583895638922)
+learn = learn.map(lambda x: (x[2], x[1]))
+data = learn.collect()
 
 
 for a in data:
