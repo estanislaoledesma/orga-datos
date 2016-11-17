@@ -1,3 +1,4 @@
+#encoding=latin-1
 #empiezo el approach por LSH
 #DATASETS=== http://jmcauley.ucsd.edu/data/amazon/links.html
 #https://nickgrattan.wordpress.com/2014/03/03/lsh-for-finding-similar-documents-from-a-large-number-of-documents-in-c/
@@ -28,13 +29,18 @@ valoresPorBanda = dict()
 
 
 def dame_shingles_chars(texto, cantidadChars):
+	'''Devuelve una lista con los shingles de texto, procesado caracter por caracter, donde los mismos tienen
+	un tamaño de cantidadChars.'''
 	return [texto[i:i + cantidadChars] for i in range(len(texto) - cantidadChars + 1)]
 
 def dame_shingles_words(texto, cantidadPalabras, maxLargoPalabra):
+	'''Devuelve una lista con los shingles de texto, procesado palabra por palabra, donde los mismos tienen un 
+	tamaño de cantidadChars y un máximo de largo de palabra igual a maxLargoPalabra.'''
 	texto = texto.split()
 	return [texto[i:i+cantidadPalabras] for i in range(len(texto) - cantidadPalabras + 1) if len(texto[i]) < maxLargoPalabra]
 
 def dame_minhashes_shingles(shingles):
+	'''Devuelve una lista de minhashes para la lista de shingles pasada por parámetro, utiliza hash and displace.'''
 	minhashes = []
 	for i in range(cantHashes):
 		minhash = maxint
@@ -59,7 +65,10 @@ def dame_minhashes_shingles(shingles):
 		minhashes.append(minhash)
 	return minhashes
 
+
 def dame_hash_bandasNumpy(minhashes):
+	'''Devuelve una lista de hashes de banda a partir de una lista de minhashes en la cual hay un número de bandas
+	y un número de hashesPorBanda para la misma.'''
 	a = np.zeros(bandas)
 	codigosBandas = []
 	hashBanda = 0
@@ -67,7 +76,7 @@ def dame_hash_bandasNumpy(minhashes):
 	indiceArreglo = 0
 	for i in range(cantHashes):
 		intervalo = intervalo + 1
-		if (intervalo == bandas):
+		if (intervalo == hashesPorBanda):
 			a[indiceArreglo] = hashBanda
 			indiceArreglo = indiceArreglo + 1
 			hashBanda = 0
@@ -76,17 +85,20 @@ def dame_hash_bandasNumpy(minhashes):
 	return a
 
 def dame_hash_bandas(minhashes):
+	'''Devuelve una lista de hashes de banda a partir de una lista de minhashes en la cual hay un número de bandas
+	y un número de hashesPorBanda para la misma.'''
 	codigosBandas = []
 	hashBanda = 0
 	intervalo = 0
 	for i in range(cantHashes):
 		intervalo = intervalo + 1
-		if (intervalo == bandas):
+		if (intervalo == hashesPorBanda):
 			codigosBandas.append(hashBanda)
 			hashBanda = 0
 			intervalo = 0
 		hashBanda += hash(minhashes[i])
 	return codigosBandas
+
 
 def dame_hash_bandasDEPREC(minhashes):
 	codigosBandas = []
@@ -101,6 +113,9 @@ def dame_hash_bandasDEPREC(minhashes):
 
 
 def proc_texto_rating(texto, rating):
+	'''Genera los shingles de texto, los minhashes y luego los hashes de cada banda. Por cada hash de banda,
+	lo agrega al diccionario valoresPorBanda y le asigna a cada uno una lista donde el valor en la misma es 
+	rating.'''
 	if shingleaWords:
 		codigosBandas = dame_hash_bandas(dame_minhashes_shingles(dame_shingles_words(texto, 2, 15)))
 	else:
@@ -111,12 +126,17 @@ def proc_texto_rating(texto, rating):
 
 
 def flatmapeo(puntaje, array):
+	'''Devuelve una lista donde cada posición es una tupla donde la primera posición es puntaje y la segunda,
+	el valor de la misma posición en array.'''
 	lista = []
 	for x in array:
 		lista.append((puntaje,x))
 	return lista
 
+
 def damePromedioBucket(indiceDict):
+	'''Devuelve el promedio del bucket dado por la clave indiceDict en dicto (un diccionario), donde el valor
+	de la misma es una lista de enteros. En caso de error, devuelve 0.'''
 	count = 0
 	acum = 0
 	try:
@@ -131,6 +151,9 @@ def damePromedioBucket(indiceDict):
 		return 0
 
 def calcScore(bandas):
+	'''Devuelve el promedio del promedio de cada banda en bandas (lista de bandas), donde el primer promedio
+	se calcula mediante damePromedioBucket de la banda (en el diccionario dicto), y el segundo es un promedio
+	de todos esos promedios. En caso de error, devuelve -1.'''
 	acum = 0
 	count = 0
 	for banda in bandas:
