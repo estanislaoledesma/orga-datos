@@ -1,3 +1,4 @@
+#encoding=latin-1
 #empiezo el approach por LSH
 #DATASETS=== http://jmcauley.ucsd.edu/data/amazon/links.html
 #https://nickgrattan.wordpress.com/2014/03/03/lsh-for-finding-similar-documents-from-a-large-number-of-documents-in-c/
@@ -108,7 +109,7 @@ def dame_hash_bandasNumpy(minhashes):
 	return a
 
 def dame_hash_bandas(minhashes):
-		'''Devuelve una lista de hashes de banda a partir de una lista de minhashes en la cual hay un número de bandas
+	'''Devuelve una lista de hashes de banda a partir de una lista de minhashes en la cual hay un número de bandas
 	y un número de hashesPorBanda para la misma.'''
 	codigosBandas = []
 	hashBanda = 0
@@ -138,12 +139,13 @@ def proc_texto_rating(texto, rating):
 
 
 def flatmapeo(idReview, puntaje, array):
-	'''Devuelve una lista donde cada posición es una tupla donde la primera posición es puntaje y la segunda,
-	el valor de la misma posición en array.'''
+	'''Devuelve una lista donde cada posición es una tupla donde la primera posición es idReview, la segunda
+	puntaje y la tercera, domde el valor de la misma posición en array.'''
 	lista = []
 	for x in array:
 		lista.append((idReview,puntaje,x))
 	return lista
+
 
 def damePromedioBucket(indiceDict):
 	'''Devuelve el promedio del bucket dado por la clave indiceDict en dicto (un diccionario), donde el valor
@@ -186,6 +188,17 @@ learn = learn.map(lambda x: x.split('|')).map(lambda x: (x[0],x[2], dame_hash_ba
 learn = learn.flatMap(lambda x: flatmapeo(x[0], x[1], x[2])) #(u'a9wx8dk93sn5', u'1.0', 813759583895638922)
 learn = learn.map(lambda x: (x[2], x[1]))
 data = learn.collect()
+
+from pyspark.mllib.tree import DecisionTree, DecisionTreeModel
+from pyspark.mllib.regression import LabeledPoint
+from pyspark.mllib.linalg import DenseVector
+
+data_for_decision_tree = learn.map(lambda x: LabeledPoint(x [0], DenseVector(x[1])))
+(dataTrain, dataTest) = data_for_decision_tree.randomSplit([0.7, 0.3])
+model = DecisionTree.trainRegressor(dataTrain, categoricalFeaturesInfo={}, impurity='variance', maxDepth=5, maxBins=32)
+predictions = model.predict(dataTest.map(lambda x: x.features))
+print predictions.collect()
+
 
 for a in data:
 	valoresPorBanda.setdefault(a[0], [])
