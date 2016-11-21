@@ -5,7 +5,7 @@
 \usepackage[ansinew]{inputenc}
 \usepackage[spanish]{babel}
 
-\title{	\textbf{Dise\~{n}o del TP: Fine Foods Review} }
+\title{	\textbf{Informe del TP: Fine Foods Review} }
 
 \author{
     Mart\'{i}n Queija, \textit{Padr\'{o}n Nro. 96.455} \\
@@ -72,7 +72,7 @@
 	
 	\subsection{Preprocesamiento de los datos}	
 
-	En una primera instancia se extrajo la puntuaci\'{o}n de los datos crudos para no desperdiciar \textit{features} con s\'{i}mbolos que a la escencia de la implementaci\'{o}n no hacen de utilidad. De todos los features elegimos quedarnos unicamente con el ReviewID, su texto asociado y el score de la misma. 
+	En una primera instancia se extrajo la puntuaci\'{o}n de los datos crudos (utilizando parserGRANDATASET.py) para no desperdiciar \textit{features} con s\'{i}mbolos que a la escencia de la implementaci\'{o}n no hacen de utilidad. De todos los features elegimos quedarnos unicamente con el ReviewID, su texto asociado y el score de la misma. 
 	
 	
 	\subsection{Training y Learning Set}
@@ -83,7 +83,7 @@
 	
 	\section{Machine Learning}
 	
-	Para alcanzar el objetivo, la intenci\'{o}n es dise\~{n}ar un algoritmo que \textit{aprenda} a partir de un set de rese\~{n}as ya puntuadas para as\'{i} poder predecir la calificaci\'{o}n de nuevas rese\~{n}as. Parte del set de rese\~{n}as ya puntuadas se reserva para probar el "aprendisaje" del algortmo. De esta manera se puede determinar la presicion del algor\'{i}tmo al predecir rese\~{n}as y comparar la predicci\'{o}n con el valor esperado. La comparacion utilizada se denomina Mean Squared Error y se calcula sumatoria total de los errores al cuadrado sobre el total de puntos. Esta relaci\'{o}n proporciona un grado de confianza sobre nuestro algor\'{i}tmo para predecir puntuaciones de nuevas rese\~{n}as.
+	Para alcanzar el objetivo, la intenci\'{o}n es dise\~{n}ar un algoritmo que \textit{aprenda} a partir de un set de rese\~{n}as ya puntuadas para as\'{i} poder predecir la calificaci\'{o}n de nuevas rese\~{n}as. Parte del set de rese\~{n}as ya puntuadas se reserva para probar el ''aprendisaje'' del algortmo. De esta manera se puede determinar la presicion del algor\'{i}tmo al predecir rese\~{n}as y comparar la predicci\'{o}n con el valor esperado. La comparacion utilizada se denomina Mean Squared Error y se calcula sumatoria total de los errores al cuadrado sobre el total de puntos. Esta relaci\'{o}n proporciona un grado de confianza sobre nuestro algor\'{i}tmo para predecir puntuaciones de nuevas rese\~{n}as.
 
 
 	\subsection{KNN}
@@ -116,7 +116,10 @@
 	\section{Detalles del Algoritmo}
 	
 	\subsection{Spark Framework}
-	El algoritmo fue desarollado en Python utilizando el framework Spark. El mismo presenta el paradigma Map-Reduce para implementar un metodo de procesamiento paralelo. A partir de los datos crudos se arma un RDD (Resilient Distributed Dataset). A estos se les puede aplicar una serie de operaciones para moldear el set de datos para extraer el analisis deseado. Las operaciones "Lazy", no se computan en el momento. Se almacenan en el RDD hasta que se llama a una operacion "Non Lazy". La operacion "Non Lazy" efectua sobre el RDD todas las operaciones "Lazy" que hayan sido almacenadas y devuelve un resultado.
+	El algoritmo fue desarollado en Python utilizando el framework Spark. El mismo presenta el paradigma Map-Reduce para implementar un metodo de procesamiento paralelo. A partir de los datos crudos se arma un RDD (Resilient Distributed Dataset). A estos se les puede aplicar una serie de operaciones para moldear el set de datos para extraer el analisis deseado. Las operaciones "Lazy", no se computan en el momento. Se almacenan en el RDD hasta que se llama a una operacion ''Non Lazy''. La operacion ''Non Lazy'' efectua sobre el RDD todas las operaciones "Lazy" que hayan sido almacenadas y devuelve un resultado. \\ \\
+	 Al configurar distintas variables del entorno de spark, como el n\'{u}mero de cores, de executor, la cantidad de memoria por executor o utilizar el serializador KryoSerializer, no obtuvimos una mejora en el rendimiento, por lo tanto dejamos los valores por default para correr nuestro algoritmo [9].
+	
+	
 	
 	\subsection{Implementacion}
 	El algoritmo esta dividido en tres partes: Entrenamiento, prediccion y calculo del error cuadratico medio. \\ \\ \includegraphics[width=\textwidth]{timeline0}\\
@@ -203,6 +206,15 @@
 	sys	3m13.928s\\
 	
 	
+	\section{Otras implementaciones descartadas}
+	
+	\subsection{Lideres y seguidores con Delta TFIDF}
+
+	Otra opci\'{o}n que implementamos, en paralelo con LSH, fue aproximar KNN con lideres y seguidores, utilizando como m\'{e}trica una variante de TF-IDF (con BM25 y normalizando los datos), llamada Delta TF-IDF [10] utilizada para el an\'{a}lisis de sentimiento, para lo cual armamos diccionarios de palabras positivas y negativas, en lo cuales contabamos la frecuencia de cada palabra en los reviews positivos y negativos, consideramos positivos a los reviews de score 4 y 5, y negativos a los de score 1, 2 y 3. En este caso al procesar los datos quitamos todos los signos, las stopwords y no utilizamos ngramas. \\ \\
+	 Descartamos esta idea porque era muy lenta al comparar el valor de delta TFIDF contra otro review, por lo tanto al comparar contra los lideres, y luego contra los seguidores del lider mas cercano se volvia muy lento el algoritmo al predecir, tardando en promedio 3 segundos por review.
+	
+	
+	
 	\begin{thebibliography}{99}
 		\bibitem{INT06} Image-based recommendations on styles and substitutes. J. McAuley, C. Targett, J. Shi, A. van den Hengel. SIGIR, 2015
 		\bibitem{INT06} Inferring networks of substitutable and complementary products. J. McAuley, R. Pandey, J. Leskovec. Knowledge Discovery and Data Mining, 2015
@@ -212,6 +224,8 @@
 		\bibitem{INT06} Apache Spark, WikiPedia,https://en.wikipedia.org/wiki/Apache\_Spark
 		\bibitem{INT06} Programacion neurolinguistica, https://es.wikipedia.org/wikiProgramaci\%C3\%B3n\_neuroling\%C3\%BC\%C3\%ADstica
 		\bibitem{INT06} Apunte oficial de la materia, Luis Argerich
+		\bibitem{INT06} CONFIGURACION SPARK https://blog.cloudera.com/blog/2015/03/how-to-tune-your-apache-spark-jobs-part-2/
+		\bibitem{INT06} Delta TF-IDF http://ebiquity.umbc.edu/_file_directory_/papers/446.pdf
 
 	\end{thebibliography}
 	
