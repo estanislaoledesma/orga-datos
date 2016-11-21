@@ -22,26 +22,28 @@ import shutil
 import datetime
 
 maxint = sys.maxint
-bandas = 10
-hashesPorBanda = 4
+bandas = 15
+hashesPorBanda = 1
 cantHashes = bandas * hashesPorBanda
 nGram = 15
 xorHash = True
 shingleaWords = False
-escribeScores = False
+escribeScoresKaggle = False
+estimaFaltantes = True
 
 #lineasEnLearn = 300000					#Big Dataset Learn File
 lineasEnLearn = 227380 #TrainKaggle00
 
-#cantReviewsToPredict = 73680000
-cantReviewsToPredict = 227380 #TrainKaggle01
+#cantReviewsToPredict = 82680000
+#cantReviewsToPredict = 600001 
+cantReviewsToPredict = 227380
 #cantReviewsToPredict = 113691 #kaggleTestFile
 hashDisplaces = []
 
 valoresPorBanda = dict()
 
-rutaTestFile = "/home/tino/Documents/trainKaggle01.csv"
 rutaLearnFile = "/home/tino/Documents/trainKaggle00.csv"
+rutaTestFile = "/home/tino/Documents/trainKaggle01.csv"
 rutaScores = "/home/tino/Documents/kagglePredictions.csv"
 
 
@@ -75,11 +77,15 @@ def logInit():
 	log("Learn file: " + rutaLearnFile)
 	log("Reviews to learn: " + str(lineasEnLearn))
 	log("Test file: " + rutaTestFile)
+	log("Reviews to predict: " + str(cantReviewsToPredict))
 	log("Bandas: " + str(bandas))
-	log("Bandas calculadas: " + str(bandas * lineasEnLearn))
-	log("XOR: " + str(not xorHash))
 	log("Hashes por banda: " + str(hashesPorBanda))
+	log("Bandas calculadas: " + str(bandas * lineasEnLearn))
 	log("Cantidad de hashes: " + str(hashesPorBanda * bandas))
+	log("XOR: " + str(xorHash))
+	log("Escribe scores Kaggle: " + str(escribeScoresKaggle))
+	if (escribeScoresKaggle):
+		log("En : " + rutaScores)
 	if (shingleaWords):
 		log("Shinglea por palabras con K-Grams: " + str(nGram))
 	else:
@@ -150,8 +156,7 @@ def dameHashBandas(minhashes):
 	hashBanda = 0
 	intervalo = 0
 	for i in range(cantHashes):
-		hashBanda += hash(minhashes[i])
-		#hashBanda += minhashes[i]		
+		hashBanda += hash(minhashes[i])	
 		intervalo = intervalo + 1
 		if (intervalo == hashesPorBanda):
 			codigosBandas.append(hashBanda)
@@ -205,20 +210,22 @@ def calcScore(bandas):
 			count += 1
 		acum += promedioBucket
 	if (acum == 0):
-		return 2.5
+		if estimaFaltantes:
+			return 3
+		return -1
 	else:
 		promedioBuckets = acum / count
 		if (promedioBuckets < 1):
 			promedioBuckets = 1
 		return promedioBuckets
-
-
-def myMap(predictedScore,actualScore):
-	if predictedScore == -1:
-		return 0
-	else:
-		return abs(predictedScore - actualScore)
-
+#
+#	myReduce()
+#	Se utiliza en el reduce del calculo del error cuadratico. 
+#	En una parte de la tupla almacena la sumatoria de los errores al cuadrado,
+#	y en la otra la cantidad de reviews con predictedScore != -1
+#	
+def myReduce(tup0,tup1):
+	return (tup0[0]+tup1[0], tup0[1]+tup1[1])
 
 #
 #	
@@ -246,19 +253,18 @@ learn = learn.map(lambda x: (x[2], x[1]))
 	#(claveBanda, Score)
 data = learn.collect()						#Non Lazy Operation
 
-print("\n\n\n\n\nEMPIEZA DICCIONARIO\n\n\n\n\n")
+print("\nDICCIONARIO\n")
 for learnedReview in data:
 	valoresPorBanda.setdefault(learnedReview[0], [])			#Establece el formato del diccionario
 	valoresPorBanda[learnedReview[0]].append(float(learnedReview[1]))	#Agrega el valor del score de learnedReview al diccionario
-print("\n\n\n\nTERMINA DICCIONARIO\n\n\n\n\n")
-
-log("CLAVES EN EL DICC: " + str(len(valoresPorBanda)))
+log("Claves en el diccionario: " + str(len(valoresPorBanda)))
+print("\nFIN DICCIONARIO\n")
 
 
 #
 #	Comienza la prediccion
 #
-print("\n\n\n\COMIENZA PREDICCION\n\n\n\n\n")
+print("\nCOMIENZA PREDICCION\n")
 
 test = sc.textFile(rutaTestFile,8)
 test = test.map(lambda x: x.split('|'))
@@ -273,28 +279,32 @@ test = test.map(lambda x: (x[0],x[1],calcScore(x[2])))
 	#(ID, Score, predictedScore)
 test = test.filter(lambda x: x[2] != -1)
 
-
-if escribeScores:
+if escribeScoresKaggle:
 	data = test.collect()
 	f = open(rutaScores, 'w')
 	for pred in data:
 			linea = str(pred[2]) + "," + str(pred[0]) + "\n"
 			f.write(linea)
+	sys.exit(0)
 
-print("\n\n\n\CHECKPOINT\n\n\n\n\n")
-
-
-#cantReviewsPredicted = test.count()		#Non Lazy Operation
-cantReviewsPredicted = cantReviewsToPredict
-
-log("RELACION: " + str(float(float(cantReviewsPredicted) / float(cantReviewsToPredict))))
-log("REVIEWS A PREDECIR: " + str(cantReviewsToPredict))
-log("REVIEWS CON SCORE: " + str(cantReviewsPredicted))
-
+#
+#	Obtenemos el Error en las predicciones
+#
+	#(ID, Score, predictedScore)
 test = test.map(lambda x: abs(float(x[2])-float(x[1])))
-#test = test.map(lambda x: myMap(float(x[2]),float(x[1])))
+	#(abs(predictedScore - Score)
 test = test.map(lambda x: (x*x))
-number = test.reduce(lambda x,y: x+y)		#Non Lazy Operation
-number = number / cantReviewsPredicted
+	#(diff^2)
+test = test.map(lambda x: (x,1))
+	#((diff^2,1))
+tupla = test.reduce(lambda x,y: myReduce(x,y)) 
+	#tupla = (Sum(diff^2), cantReviewsPredicted)
 
-log("PROMEDIO DE LOS CUADRADOS DE LAS DIFERENCIAS: " + str(number))
+sumaCuadradosDiferencia = tupla[0]
+cantReviewsPredicted = tupla[1]
+error = sumaCuadradosDiferencia / cantReviewsPredicted
+
+
+log("Predicted / To Predict: " + str(float(float(cantReviewsPredicted) / float(cantReviewsToPredict))))
+log("Reviews con score: " + str(cantReviewsPredicted))
+log("Error cuadratico medio: " + str(error))
